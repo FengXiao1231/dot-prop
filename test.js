@@ -1487,6 +1487,14 @@ test('stringifyPath', t => {
 	});
 });
 
+test('stringifyPath treats numbers that print in exponent notation as string keys', t => {
+	// 1e21 is an integer, but String(1e21) is '1e+21', which is not a valid index
+	t.is(stringifyPath([1e21]), '1e+21');
+	t.is(stringifyPath(['foo', 1e21]), 'foo.1e+21');
+	t.deepEqual(parsePath(stringifyPath([1e21])), ['1e+21']);
+	t.deepEqual(parsePath(stringifyPath(['foo', 1e21, 'bar'])), ['foo', '1e+21', 'bar']);
+});
+
 test('stringifyPath and parsePath roundtrip', t => {
 	// Test that stringifyPath(parsePath(x)) is consistent
 	const testPaths = [
